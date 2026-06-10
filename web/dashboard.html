@@ -154,21 +154,23 @@
             display: flex;
             gap: 24px;
             justify-content: center;
-            align-items: flex-start;
+            align-items: stretch;
             flex-wrap: wrap;
         }
 
-        /* Avatar Container (Fixed size, non-resizable) */
+        /* Avatar Container */
         .avatar-section {
-            width: 1152px;
-            height: 648px;
+            flex: 1 1 600px;
+            width: 100%;
+            max-width: 1152px;
+            aspect-ratio: 16 / 9;
+            height: auto;
             position: relative;
             background-color: #0d0e12;
             border-radius: var(--border-radius-lg);
             overflow: hidden;
             box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
             border: 1px solid var(--border-color);
-            flex-shrink: 0;
         }
 
         .avatar-placeholder {
@@ -226,8 +228,12 @@
 
         /* Chat Panel */
         .chat-section {
-            width: 440px;
-            height: 648px;
+            flex: 1 1 350px;
+            width: 100%;
+            max-width: 440px;
+            height: auto;
+            min-height: 500px;
+            max-height: 70vh;
             background-color: var(--card-bg);
             border-radius: var(--border-radius-lg);
             border: 1px solid var(--border-color);
@@ -235,7 +241,6 @@
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            flex-shrink: 0;
             position: relative;
         }
 
