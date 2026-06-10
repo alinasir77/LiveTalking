@@ -26,6 +26,7 @@ function negotiate() {
             body: JSON.stringify({
                 sdp: offer.sdp,
                 type: offer.type,
+                avatar: "mwmw-avatar"
             }),
             headers: {
                 'Content-Type': 'application/json'
