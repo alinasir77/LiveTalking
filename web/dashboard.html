@@ -47,7 +47,6 @@
             max-width: 1700px;
             display: flex;
             flex-direction: column;
-            gap: 24px;
         }
 
         .header-bar {
@@ -463,26 +462,15 @@
             cursor: not-allowed;
         }
 
-        /* Complete Interview Button */
-        .complete-btn {
-            width: 100% !important;
-            padding: 12px;
-            background-color: var(--primary-color);
-            color: #ffffff;
-            border: none;
-            border-radius: var(--border-radius-md);
-            font-size: 14px;
-            font-weight: 600;
-            transition: all 0.2s ease;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(25, 60, 184, 0.15);
-            display: block;
-            text-align: center;
+        /* Stop Avatar Button */
+        .stop-avatar-btn {
+            background-color: #ef4444 !important;
+            box-shadow: 0 6px 10px rgba(239, 68, 68, 0.2) !important;
         }
 
-        .complete-btn:hover {
-            background-color: var(--primary-hover);
-            box-shadow: 0 6px 16px rgba(25, 60, 184, 0.25);
+        .stop-avatar-btn:hover {
+            background-color: #dc2626 !important;
+            box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4) !important;
         }
 
         /* Settings popover details */
@@ -557,6 +545,11 @@
                 <button class="try-out-btn" id="start">
                     <span>Try It Out</span>
                 </button>
+                
+                <!-- Stop Avatar overlay button -->
+                <button class="try-out-btn stop-avatar-btn" id="stop" style="display: none;">
+                    <span>Stop Avatar</span>
+                </button>
             </div>
 
             <!-- Right Side: Chat Section -->
@@ -604,11 +597,7 @@
                         </div>
                     </form>
 
-                    <!-- Complete Interview (Stop connection) Button -->
-                    <!-- Positioned at the bottom of the card, initially hidden since we are disconnected -->
-                    <button class="complete-btn" id="stop" style="display: none;">
-                        Complete Interview
-                    </button>
+                    <!-- (Stop button moved to avatar section) -->
                 </div>
             </div>
         </div>
