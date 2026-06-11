@@ -775,6 +775,11 @@
                         'Content-Type': 'application/json'
                     },
                     method: 'POST'
+                }).then(res => res.json())
+                .then(data => {
+                    if (data && data.data && data.data.response) {
+                        addChatMessage(data.data.response, 'avatar');
+                    }
                 }).catch(function(error) {
                     console.error('Error posting chat message:', error);
                 });

@@ -12,7 +12,7 @@ def llm_response(message,avatar_session:'BaseAvatar',datainfo:dict={}):
         static_response = f"收到，这是本地静态测试回复。你发送的消息是：{message}"
         logger.info(f"Static LLM response: {static_response}")
         avatar_session.put_msg_txt(static_response, datainfo)
-        return
+        return static_response
 
         # start = time.perf_counter()
         # from openai import OpenAI
