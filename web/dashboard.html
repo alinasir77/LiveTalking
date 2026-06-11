@@ -664,6 +664,8 @@
                 }
             }
 
+            let hasSentGreeting = false;
+
             // Connection Status Updates
             function updateConnectionStatus(status) {
                 const statusDot = $('#status-dot');
@@ -680,6 +682,31 @@
                         placeholder.fadeOut(300);
                         video.fadeIn(300);
                         setChatActiveState(true);
+
+                        if (!hasSentGreeting) {
+                            hasSentGreeting = true;
+                            fetch('/human', {
+                                body: JSON.stringify({
+                                    text: 'Greet me and introduce yourself',
+                                    type: 'chat',
+                                    interrupt: true,
+                                    sessionid: String(document.getElementById('sessionid').value),
+                                }),
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                method: 'POST'
+                            }).then(res => res.json())
+                            .then(data => {
+                                if (data && data.data && data.data.response) {
+                                    setTimeout(() => {
+                                        addChatMessage(data.data.response, 'avatar');
+                                    }, 200);
+                                }
+                            }).catch(function(error) {
+                                console.error('Error posting default greeting:', error);
+                            });
+                        }
                         break;
                     case 'connecting':
                         statusDot.addClass('connecting');
@@ -695,6 +722,7 @@
                         placeholder.fadeIn(300);
                         video.fadeOut(300);
                         setChatActiveState(false);
+                        hasSentGreeting = false;
                         break;
                 }
             }
@@ -778,7 +806,9 @@
                 }).then(res => res.json())
                 .then(data => {
                     if (data && data.data && data.data.response) {
-                        addChatMessage(data.data.response, 'avatar');
+                        setTimeout(() => {
+                            addChatMessage(data.data.response, 'avatar');
+                        }, 200);
                     }
                 }).catch(function(error) {
                     console.error('Error posting chat message:', error);
