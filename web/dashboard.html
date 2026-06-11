@@ -3,587 +3,798 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LiveTalking Interactive Platform</title>
+    <title>Interactive Avatar - POC Developement</title>
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.cdnfonts.com/css/tt-norms-pro" rel="stylesheet">
     <style>
         :root {
-            --primary-color: #4361ee;
-            --secondary-color: #3f37c9;
-            --accent-color: #4895ef;
-            --background-color: #f8f9fa;
+            --primary-color: #193CB8;
+            --primary-hover: #122c8c;
+            --primary-light: rgba(25, 60, 184, 0.08);
+            --primary-light-hover: rgba(25, 60, 184, 0.15);
+            --bg-color: #f4f5fa;
             --card-bg: #ffffff;
-            --text-color: #212529;
-            --border-radius: 10px;
-            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --border-radius-lg: 16px;
+            --border-radius-md: 12px;
+            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+            --font-family: 'TT Norms Pro', sans-serif;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--background-color);
-            color: var(--text-color);
+            font-family: var(--font-family);
+            background-color: var(--bg-color);
+            color: var(--text-main);
             min-height: 100vh;
-            padding-top: 20px;
-        }
-
-        .dashboard-container {
-            max-width: 1400px;
-            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
             padding: 20px;
         }
 
-        .card {
-            background-color: var(--card-bg);
-            border-radius: var(--border-radius);
-            box-shadow: var(--box-shadow);
-            border: none;
-            margin-bottom: 20px;
-            overflow: hidden;
-        }
-
-        .card-header {
-            background-color: var(--primary-color);
-            color: white;
-            font-weight: 600;
-            padding: 15px 20px;
-            border-bottom: none;
-        }
-
-        .video-container {
-            position: relative;
+        .app-container {
             width: 100%;
-            background-color: #000;
-            border-radius: var(--border-radius);
-            overflow: hidden;
+            max-width: 1700px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header-bar {
             display: flex;
             justify-content: center;
             align-items: center;
+            padding: 10px 0 20px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .header-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .title-badge {
+            background: rgba(25, 60, 184, 0.08);
+            color: var(--primary-color);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            border: 1px solid rgba(25, 60, 184, 0.2);
+        }
+
+        .header-bar h1 {
+            font-size: 56px;
+            font-weight: 800;
+            margin: 0;
+            color: black;
+            letter-spacing: -1.5px;
+            line-height: 1.1;
+        }
+
+        .header-subtitle {
+            font-size: 16px;
+            color: var(--text-muted);
+            margin-top: -5px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        .header-logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-logo i {
+            font-size: 26px;
+        }
+
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 16px;
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .status-dot.connected {
+            background-color: #10B981;
+            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.2);
+        }
+
+        .status-dot.disconnected {
+            background-color: #EF4444;
+            box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.2);
+        }
+
+        .status-dot.connecting {
+            background-color: #F59E0B;
+            box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.2);
+            animation: pulse-status 1.5s infinite;
+        }
+
+        @keyframes pulse-status {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.6; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .main-layout {
+            display: flex;
+            gap: 24px;
+            justify-content: center;
+            align-items: stretch;
+            flex-wrap: wrap;
+        }
+
+        /* Avatar Container */
+        .avatar-section {
+            flex: 1 1 600px;
+            width: 100%;
+            max-width: 1152px;
+            aspect-ratio: 16 / 9;
+            height: auto;
+            position: relative;
+            background-color: #0d0e12;
+            border-radius: var(--border-radius-lg);
+            overflow: hidden;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--border-color);
+        }
+
+        .avatar-placeholder {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 2;
+            transition: opacity 0.5s ease;
         }
 
         video {
-            max-width: 100%;
-            max-height: 100%;
-            display: block;
-            border-radius: var(--border-radius);
-        }
-
-        .controls-container {
-            padding: 20px;
-        }
-
-        .btn-primary {
-            background-color: var(--primary-color);
-            border-color: var(--primary-color);
-        }
-
-        .btn-primary:hover {
-            background-color: var(--secondary-color);
-            border-color: var(--secondary-color);
-        }
-
-        .btn-outline-primary {
-            color: var(--primary-color);
-            border-color: var(--primary-color);
-        }
-
-        .btn-outline-primary:hover {
-            background-color: var(--primary-color);
-            color: white;
-        }
-
-        .form-control {
-            border-radius: var(--border-radius);
-            padding: 10px 15px;
-            border: 1px solid #ced4da;
-        }
-
-        .form-control:focus {
-            border-color: var(--accent-color);
-            box-shadow: 0 0 0 0.25rem rgba(67, 97, 238, 0.25);
-        }
-
-        .status-indicator {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            display: inline-block;
-            margin-right: 5px;
-        }
-
-        .status-connected {
-            background-color: #28a745;
-        }
-
-        .status-disconnected {
-            background-color: #dc3545;
-        }
-
-        .status-connecting {
-            background-color: #ffc107;
-        }
-
-        .asr-container {
-            height: 300px;
-            overflow-y: auto;
-            padding: 15px;
-            background-color: #f8f9fa;
-            border-radius: var(--border-radius);
-            border: 1px solid #ced4da;
-        }
-
-        .asr-text {
-            margin-bottom: 10px;
-            padding: 10px;
-            background-color: white;
-            border-radius: var(--border-radius);
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        }
-
-        .user-message {
-            background-color: #e3f2fd;
-            border-left: 4px solid var(--primary-color);
-        }
-
-        .system-message {
-            background-color: #f1f8e9;
-            border-left: 4px solid #8bc34a;
-        }
-
-        .recording-indicator {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
             position: absolute;
-            top: 15px;
-            right: 15px;
-            background-color: rgba(220, 53, 69, 0.8);
-            color: white;
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            display: none;
+            top: 0;
+            left: 0;
+            z-index: 1;
+            background-color: #000;
         }
 
-        .recording-indicator.active {
+        .try-out-btn {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            padding: 10px 96px;
+            background-color: var(--primary-color);
+            color: #ffffff !important;
+            border: none;
+            border-radius: var(--border-radius-md);
+            font-size: 16px;
+            font-weight: 600;
+            box-shadow: 0 6px 10px rgba(25, 60, 184, 0.157);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
             display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .try-out-btn:hover {
+            background-color: var(--primary-hover);
+            transform: translateX(-50%) translateY(-2px);
+            box-shadow: 0 8px 24px rgba(25, 60, 184, 0.5);
+        }
+
+        .try-out-btn:active {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* Chat Panel */
+        .chat-section {
+            flex: 1 1 350px;
+            width: 100%;
+            max-width: 440px;
+            height: auto;
+            min-height: 500px;
+            max-height: 70vh;
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius-lg);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--card-shadow);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .chat-header {
+            padding: 20px 24px 16px 24px;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            justify-content: space-between;
             align-items: center;
         }
 
-        .recording-indicator .blink {
-            width: 10px;
-            height: 10px;
-            background-color: #fff;
-            border-radius: 50%;
-            margin-right: 5px;
-            animation: blink 1s infinite;
+        .chat-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin: 0;
         }
 
-        @keyframes blink {
-            0% { opacity: 1; }
-            50% { opacity: 0.3; }
-            100% { opacity: 1; }
-        }
-
-        .mode-switch {
-            margin-bottom: 20px;
-        }
-
-        .nav-tabs .nav-link {
-            color: var(--text-color);
+        .settings-btn {
+            background: none;
             border: none;
-            padding: 10px 20px;
-            border-radius: var(--border-radius) var(--border-radius) 0 0;
+            color: var(--text-muted);
+            font-size: 18px;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 50%;
+            transition: background-color 0.2s, color 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .nav-tabs .nav-link.active {
+        .settings-btn:hover {
+            background-color: #f1f5f9;
             color: var(--primary-color);
-            background-color: var(--card-bg);
-            border-bottom: 3px solid var(--primary-color);
+        }
+
+        .chat-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px 24px;
+            position: relative;
+            background-color: #ffffff;
+        }
+
+        /* Welcome Screen inside Chat */
+        .chat-welcome {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            text-align: center;
+            gap: 16px;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .chat-welcome-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            box-shadow: 0 6px 16px rgba(25, 60, 184, 0.25);
+        }
+
+        .chat-welcome-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin: 0;
+        }
+
+        .chat-welcome-desc {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin: 0;
+            max-width: 280px;
+            line-height: 1.5;
+        }
+
+        /* Message feed list */
+        .chat-messages {
+            display: none;
+            flex-direction: column;
+            gap: 16px;
+            height: 100%;
+            overflow-y: auto;
+        }
+
+        .chat-message-item {
+            display: flex;
+            flex-direction: column;
+            max-width: 80%;
+            animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .chat-message-item.user {
+            align-self: flex-end;
+            align-items: flex-end;
+        }
+
+        .chat-message-item.avatar {
+            align-self: flex-start;
+            align-items: flex-start;
+        }
+
+        .chat-message-bubble {
+            padding: 12px 18px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .chat-message-item.user .chat-message-bubble {
+            background-color: var(--primary-color);
+            color: #ffffff;
+            border-radius: 16px 16px 4px 16px;
+            box-shadow: 0 4px 12px rgba(25, 60, 184, 0.15);
+        }
+
+        .chat-message-item.avatar .chat-message-bubble {
+            background-color: #f1f5f9;
+            color: var(--text-main);
+            border-radius: 16px 16px 16px 4px;
+            border: 1px solid var(--border-color);
+        }
+
+        .chat-message-sender {
+            font-size: 11px;
             font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        .tab-content {
-            padding: 20px;
-            background-color: var(--card-bg);
-            border-radius: 0 0 var(--border-radius) var(--border-radius);
+        /* Chat Footer */
+        .chat-footer {
+            padding: 16px 24px 20px 24px;
+            border-top: 1px solid #f1f5f9;
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
         }
 
-        .settings-panel {
-            padding: 15px;
-            background-color: #f8f9fa;
-            border-radius: var(--border-radius);
-            margin-top: 15px;
+        .chat-input-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background-color: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            padding: 6px 6px 6px 18px;
+            transition: all 0.2s ease;
         }
 
+        .chat-input-wrapper:focus-within {
+            border-color: var(--primary-color);
+            background-color: #ffffff;
+            box-shadow: 0 0 0 3px rgba(25, 60, 184, 0.1);
+        }
+
+        .chat-input-wrapper.disabled {
+            background-color: #f1f5f9;
+            border-color: #e2e8f0;
+            cursor: not-allowed;
+        }
+
+        .chat-input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            outline: none;
+            font-size: 14px;
+            color: var(--text-main);
+            resize: none;
+            height: 24px;
+            line-height: 24px;
+            padding: 0;
+            font-family: inherit;
+        }
+
+        .chat-input:disabled {
+            color: var(--text-muted);
+            cursor: not-allowed;
+        }
+
+        .chat-send-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: var(--border-radius-md);
+            background-color: var(--primary-color);
+            color: #ffffff;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 14px;
+        }
+
+        .chat-send-btn:hover:not(:disabled) {
+            background-color: var(--primary-hover);
+            transform: scale(1.05);
+        }
+
+        .chat-send-btn:active:not(:disabled) {
+            transform: scale(0.95);
+        }
+
+        .chat-send-btn:disabled {
+            background-color: #cbd5e1;
+            color: #94a3b8;
+            cursor: not-allowed;
+        }
+
+        /* Stop Avatar Button */
+        .stop-avatar-btn {
+            background-color: #ef4444 !important;
+            box-shadow: 0 6px 10px rgba(239, 68, 68, 0.2) !important;
+        }
+
+        .stop-avatar-btn:hover {
+            background-color: #dc2626 !important;
+            box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4) !important;
+        }
+
+        /* Settings popover details */
+        .settings-popover {
+            position: absolute;
+            top: 65px;
+            right: 24px;
+            width: 220px;
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            padding: 16px;
+            z-index: 100;
+            display: none;
+            animation: fadeIn 0.2s ease-out;
+        }
+
+        .settings-popover-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+
+        /* Footer */
         .footer {
             text-align: center;
             margin-top: 30px;
             padding: 20px 0;
-            color: #6c757d;
+            color: var(--text-muted);
             font-size: 0.9rem;
         }
-        
-        .voice-record-btn {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background-color: var(--primary-color);
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            margin: 0 auto;
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        
-        .voice-record-btn:hover {
-            background-color: var(--secondary-color);
-            transform: scale(1.05);
-        }
-        
-        .voice-record-btn:active {
-            background-color: #dc3545;
-            transform: scale(0.95);
-        }
-        
-        .voice-record-btn i {
-            font-size: 24px;
-        }
-        
-        .voice-record-label {
-            text-align: center;
-            margin-top: 10px;
-            font-size: 14px;
-            color: #6c757d;
-        }
-        
-        .video-size-control {
-            margin-top: 15px;
-        }
-        
-        .recording-pulse {
-            animation: pulse 1.5s infinite;
-        }
-        
-        @keyframes pulse {
-            0% {
-                box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.7);
-            }
-            70% {
-                box-shadow: 0 0 0 15px rgba(220, 53, 69, 0);
-            }
-            100% {
-                box-shadow: 0 0 0 0 rgba(220, 53, 69, 0);
-            }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
-    <div class="dashboard-container">
-        <div class="row">
-            <div class="col-12">
-                <h1 class="text-center mb-4">LiveTalking Interactive Platform</h1>
+    <div class="app-container">
+        <!-- Header -->
+        <div class="header-bar">
+            <div class="header-content">
+                <div class="title-badge">Live Demo</div>
+                <h1>Interactive Avatar</h1>
+                <p class="header-subtitle">Real-Time Interactive Digital Human</p>
             </div>
         </div>
 
-        <div class="row">
-            <!-- Video Area -->
-            <div class="col-lg-8">
-                <div class="card">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <div>
-                            <span class="status-indicator status-disconnected" id="connection-status"></span>
-                            <span id="status-text">Disconnected</span>
-                        </div>
-                    </div>
-                    <div class="card-body p-0">
-                        <div class="video-container">
-                            <video id="video" autoplay playsinline></video>
-                            <div class="recording-indicator" id="recording-indicator">
-                                <div class="blink"></div>
-                                <span>Recording</span>
-                            </div>
-                        </div>
-                        
-                        <div class="controls-container">
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <button class="btn btn-primary w-100" id="start">
-                                        <i class="bi bi-play-fill"></i> Start Connection
-                                    </button>
-                                    <button class="btn btn-danger w-100" id="stop" style="display: none;">
-                                        <i class="bi bi-stop-fill"></i> Stop Connection
-                                    </button>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <div class="d-flex">
-                                        <button class="btn btn-outline-primary flex-grow-1 me-2" id="btn_start_record">
-                                            <i class="bi bi-record-fill"></i> Start Recording
-                                        </button>
-                                        <button class="btn btn-outline-danger flex-grow-1" id="btn_stop_record" disabled>
-                                            <i class="bi bi-stop-fill"></i> Stop Recording
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
+        <!-- Main Workspace -->
+        <div class="main-layout">
+            <!-- Left Side: Fixed Size Avatar Section -->
+            <div class="avatar-section">
+                <!-- Placeholder Image -->
+                <img id="placeholder-img" class="avatar-placeholder" src="avatar-placeholder.webp" alt="Avatar Placeholder">
+                
+                <!-- Video stream -->
+                <video id="video" autoplay playsinline style="display: none;"></video>
+                <!-- Audio stream (hidden but required) -->
+                <audio id="audio" autoplay style="display: none;"></audio>
 
-                            <div class="row">
-                                <div class="col-12">
-                                    <div class="video-size-control">
-                                        <label for="video-size-slider" class="form-label">Adjust Video Size: <span id="video-size-value">100%</span></label>
-                                        <input type="range" class="form-range" id="video-size-slider" min="50" max="150" value="100">
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="settings-panel mt-3">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="form-check form-switch mb-3">
-                                            <input class="form-check-input" type="checkbox" id="use-stun">
-                                            <label class="form-check-label" for="use-stun">Use STUN Server</label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                <!-- Status Overlay -->
+                <div class="status-badge" style="position: absolute; top: 16px; right: 16px; z-index: 10; background: rgba(13, 14, 18, 0.6); color: white; border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(8px);">
+                    <span class="status-dot disconnected" id="status-dot"></span>
+                    <span id="status-text">Disconnected</span>
+                </div>
+
+                <!-- Try It Out (Start connection) overlay button -->
+                <button class="try-out-btn" id="start">
+                    <span>Try It Out</span>
+                </button>
+                
+                <!-- Stop Avatar overlay button -->
+                <button class="try-out-btn stop-avatar-btn" id="stop" style="display: none;">
+                    <span>Stop Avatar</span>
+                </button>
+            </div>
+
+            <!-- Right Side: Chat Section -->
+            <div class="chat-section">
+                <!-- Chat Header -->
+                <div class="chat-header">
+                    <h3 class="chat-title">Live Chat</h3>
+                    <button class="settings-btn" id="settings-toggle" title="Settings">
+                        <i class="bi bi-gear-fill"></i>
+                    </button>
+                    <!-- Small clean settings popover for STUN option -->
+                    <div class="settings-popover" id="settings-popover">
+                        <div class="settings-popover-title">Connection Settings</div>
+                        <div class="form-check form-switch m-0">
+                            <input class="form-check-input" type="checkbox" id="use-stun">
+                            <label class="form-check-label" for="use-stun" style="font-size: 13px; font-weight: 500; cursor: pointer;">Use STUN Server</label>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Interaction Column -->
-            <div class="col-lg-4">
-                <div class="card">
-                    <div class="card-header">
-                        <ul class="nav nav-tabs card-header-tabs" id="interaction-tabs" role="tablist">
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link active" id="chat-tab" data-bs-toggle="tab" data-bs-target="#chat" type="button" role="tab" aria-controls="chat" aria-selected="true">Chat Mode</button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="tts-tab" data-bs-toggle="tab" data-bs-target="#tts" type="button" role="tab" aria-controls="tts" aria-selected="false">TTS Mode</button>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="card-body">
-                        <div class="tab-content" id="interaction-tabs-content">
-                            <!-- Chat Mode -->
-                            <div class="tab-pane fade show active" id="chat" role="tabpanel" aria-labelledby="chat-tab">
-                                <div class="asr-container mb-3" id="chat-messages">
-                                    <div class="asr-text system-message">
-                                        System: Welcome to LiveTalking. Click "Start Connection" to begin.
-                                    </div>
-                                </div>
-                                
-                                <form id="chat-form">
-                                    <div class="input-group mb-3">
-                                        <textarea class="form-control" id="chat-message" rows="3" placeholder="Type what you want to say to the avatar..."></textarea>
-                                        <button class="btn btn-primary" type="submit">
-                                            <i class="bi bi-send"></i> Send
-                                        </button>
-                                    </div>
-                                </form>
-                                
-                                <!-- Hold to Talk Button -->
-                                <div class="voice-record-btn" id="voice-record-btn">
-                                    <i class="bi bi-mic-fill"></i>
-                                </div>
-                                <div class="voice-record-label">Hold to talk, release to send</div>
-                            </div>
-                            
-                            <!-- TTS Mode -->
-                            <div class="tab-pane fade" id="tts" role="tabpanel" aria-labelledby="tts-tab">
-                                <form id="echo-form">
-                                    <div class="mb-3">
-                                        <label for="message" class="form-label">Enter text to read aloud</label>
-                                        <textarea class="form-control" id="message" rows="6" placeholder="Type what you want the avatar to read aloud..."></textarea>
-                                    </div>
-                                    <button type="submit" class="btn btn-primary w-100">
-                                        <i class="bi bi-volume-up"></i> Read Aloud
-                                    </button>
-                                </form>
-                            </div>
+                <!-- Chat Body -->
+                <div class="chat-body">
+                    <!-- Welcoming helper when session has not started -->
+                    <div class="chat-welcome" id="chat-welcome">
+                        <div class="chat-welcome-icon">
+                            <i class="bi bi-chat-fill"></i>
                         </div>
+                        <h4 class="chat-welcome-title">Start Your Conversation</h4>
+                        <p class="chat-welcome-desc">Begin chatting with the AI avatar. Type your message below to get started.</p>
                     </div>
+
+                    <!-- Chat Messages feed (active during session) -->
+                    <div class="chat-messages" id="chat-messages"></div>
+                </div>
+
+                <!-- Chat Footer -->
+                <div class="chat-footer">
+                    <!-- Chat Input Form -->
+                    <form id="chat-form" style="width: 100%; margin: 0;">
+                        <div class="chat-input-wrapper disabled" id="chat-input-wrapper">
+                            <textarea class="chat-input" id="chat-message" placeholder="Start avatar session first..." disabled rows="1"></textarea>
+                            <button class="chat-send-btn" type="submit" id="send-msg-btn" disabled>
+                                <i class="bi bi-send-fill"></i>
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- (Stop button moved to avatar section) -->
                 </div>
             </div>
         </div>
 
-        <div class="footer">
-            <p>Made with ❤️ by Marstaos | Frontend & Performance Optimization</p>
-        </div>
+        <!-- Hidden session ID -->
+        <input type="hidden" id="sessionid" value="0">
+
+     
     </div>
 
-    <!-- Hidden session ID -->
-    <input type="hidden" id="sessionid" value="0">
-
-
+    <!-- Script imports -->
     <script src="client.js"></script>
     <script src="srs.sdk.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function() {
-            $('#video-size-slider').on('input', function() {
-                const value = $(this).val();
-                $('#video-size-value').text(value + '%');
-                $('#video').css('width', value + '%');
+            // Settings Popover Toggle
+            $('#settings-toggle').click(function(e) {
+                e.stopPropagation();
+                $('#settings-popover').toggle();
             });
+            $(document).click(function(e) {
+                if (!$(e.target).closest('.chat-header').length) {
+                    $('#settings-popover').hide();
+                }
+            });
+
+            // Adjust text area size or layout on message keypress
+            $('#chat-message').on('keydown', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    $('#chat-form').submit();
+                }
+            });
+
+            // Toggle active visual states of Chat Section
+            function setChatActiveState(active) {
+                const wrapper = $('#chat-input-wrapper');
+                const textarea = $('#chat-message');
+                const sendBtn = $('#send-msg-btn');
+                const welcome = $('#chat-welcome');
+                const messages = $('#chat-messages');
+
+                if (active) {
+                    welcome.hide();
+                    messages.show().css('display', 'flex');
+                    wrapper.removeClass('disabled');
+                    textarea.prop('disabled', false).attr('placeholder', 'Type a message...');
+                    sendBtn.prop('disabled', false);
+                    messages.scrollTop(messages[0].scrollHeight);
+                } else {
+                    welcome.show();
+                    messages.hide().empty();
+                    wrapper.addClass('disabled');
+                    textarea.prop('disabled', true).attr('placeholder', 'Start avatar session first...').val('');
+                    sendBtn.prop('disabled', true);
+                }
+            }
+
+            let hasSentGreeting = false;
+
+            // Connection Status Updates
             function updateConnectionStatus(status) {
-                const statusIndicator = $('#connection-status');
+                const statusDot = $('#status-dot');
                 const statusText = $('#status-text');
-                
-                statusIndicator.removeClass('status-connected status-disconnected status-connecting');
+                const placeholder = $('#placeholder-img');
+                const video = $('#video');
+
+                statusDot.removeClass('connected disconnected connecting');
                 
                 switch(status) {
                     case 'connected':
-                        statusIndicator.addClass('status-connected');
+                        statusDot.addClass('connected');
                         statusText.text('Connected');
+                        placeholder.fadeOut(300);
+                        video.fadeIn(300);
+                        setChatActiveState(true);
+
+                        if (!hasSentGreeting) {
+                            hasSentGreeting = true;
+                            fetch('/human', {
+                                body: JSON.stringify({
+                                    text: 'Greet me and introduce yourself',
+                                    type: 'chat',
+                                    interrupt: true,
+                                    sessionid: String(document.getElementById('sessionid').value),
+                                }),
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                method: 'POST'
+                            }).then(res => res.json())
+                            .then(data => {
+                                if (data && data.data && data.data.response) {
+                                    setTimeout(() => {
+                                        addChatMessage(data.data.response, 'avatar');
+                                    }, 200);
+                                }
+                            }).catch(function(error) {
+                                console.error('Error posting default greeting:', error);
+                            });
+                        }
                         break;
                     case 'connecting':
-                        statusIndicator.addClass('status-connecting');
+                        statusDot.addClass('connecting');
                         statusText.text('Connecting...');
+                        placeholder.fadeIn(300);
+                        video.fadeOut(300);
+                        setChatActiveState(false);
                         break;
                     case 'disconnected':
                     default:
-                        statusIndicator.addClass('status-disconnected');
+                        statusDot.addClass('disconnected');
                         statusText.text('Disconnected');
+                        placeholder.fadeIn(300);
+                        video.fadeOut(300);
+                        setChatActiveState(false);
+                        hasSentGreeting = false;
                         break;
                 }
             }
 
-            // Add Chat Message
+            // Chat Message Insertion
             function addChatMessage(message, type = 'user') {
                 const messagesContainer = $('#chat-messages');
-                const messageClass = type === 'user' ? 'user-message' : 'system-message';
-                const sender = type === 'user' ? 'You' : 'Avatar';
-                
+                const messageClass = type === 'user' ? 'user' : 'avatar';
+                const senderName = type === 'user' ? 'You' : 'Avatar';
+
                 const messageElement = $(`
-                    <div class="asr-text ${messageClass}">
-                        ${sender}: ${message}
+                    <div class="chat-message-item ${messageClass}">
+                        <span class="chat-message-sender">${senderName}</span>
+                        <div class="chat-message-bubble">
+                            ${message}
+                        </div>
                     </div>
                 `);
-                
+
                 messagesContainer.append(messageElement);
                 messagesContainer.scrollTop(messagesContainer[0].scrollHeight);
             }
 
-            // Start/Stop buttons
+            // Connection actions
+            let connectionCheckTimer = null;
+
             $('#start').click(function() {
                 updateConnectionStatus('connecting');
-                start();
-                $(this).hide();
-                $('#stop').show();
                 
-                // Add timer to check if video stream loaded
-                let connectionCheckTimer = setInterval(function() {
-                    const video = document.getElementById('video');
-                    // Check if video has data
-                    if (video.readyState >= 3 && video.videoWidth > 0) {
+                // Call starting connection handler in client.js
+                start();
+                
+                // Polling check to confirm actual video transmission
+                connectionCheckTimer = setInterval(function() {
+                    const videoEl = document.getElementById('video');
+                    if (videoEl.readyState >= 3 && videoEl.videoWidth > 0) {
                         updateConnectionStatus('connected');
                         clearInterval(connectionCheckTimer);
                     }
-                }, 2000); // Check every 2s
-                
-                // Stop checking after 60s if still connecting
+                }, 1000);
+
+                // Timeout checking after 30s
                 setTimeout(function() {
                     if (connectionCheckTimer) {
                         clearInterval(connectionCheckTimer);
                     }
-                }, 60000);
+                }, 30000);
             });
 
             $('#stop').click(function() {
+                if (connectionCheckTimer) {
+                    clearInterval(connectionCheckTimer);
+                }
                 stop();
                 $(this).hide();
                 $('#start').show();
                 updateConnectionStatus('disconnected');
             });
 
-            // Recording functions
-            $('#btn_start_record').click(function() {
-                console.log('Starting recording...');
-                fetch('/record', {
-                    body: JSON.stringify({
-                        type: 'start_record',
-                        sessionid: String(document.getElementById('sessionid').value),
-                    }),
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    method: 'POST'
-                }).then(function(response) {
-                    if (response.ok) {
-                        console.log('Recording started.');
-                        $('#btn_start_record').prop('disabled', true);
-                        $('#btn_stop_record').prop('disabled', false);
-                        $('#recording-indicator').addClass('active');
-                    } else {
-                        console.error('Failed to start recording.');
-                    }
-                }).catch(function(error) {
-                    console.error('Error:', error);
-                });
-            });
-
-            $('#btn_stop_record').click(function() {
-                console.log('Stopping recording...');
-                fetch('/record', {
-                    body: JSON.stringify({
-                        type: 'end_record',
-                        sessionid: String(document.getElementById('sessionid').value),
-                    }),
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    method: 'POST'
-                }).then(function(response) {
-                    if (response.ok) {
-                        console.log('Recording stopped.');
-                        $('#btn_start_record').prop('disabled', false);
-                        $('#btn_stop_record').prop('disabled', true);
-                        $('#recording-indicator').removeClass('active');
-                    } else {
-                        console.error('Failed to stop recording.');
-                    }
-                }).catch(function(error) {
-                    console.error('Error:', error);
-                });
-            });
-
-            $('#echo-form').on('submit', function(e) {
-                e.preventDefault();
-                var message = $('#message').val();
-                if (!message.trim()) return;
-                
-                console.log('Sending echo message:', message);
-                
-                fetch('/human', {
-                    body: JSON.stringify({
-                        text: message,
-                        type: 'echo',
-                        interrupt: true,
-                        sessionid: String(document.getElementById('sessionid').value),
-                    }),
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    method: 'POST'
-                });
-                
-                $('#message').val('');
-                addChatMessage(`Sent reading request: "${message}"`, 'system');
-            });
-
-            // Chat form submit
+            // Chat form submission logic
             $('#chat-form').on('submit', function(e) {
                 e.preventDefault();
-                var message = $('#chat-message').val();
-                if (!message.trim()) return;
+                const textInput = $('#chat-message');
+                const messageVal = textInput.val().trim();
                 
-                console.log('Sending chat message:', message);
-                
+                if (!messageVal) return;
+
+                console.log('Sending message to avatar:', messageVal);
+
                 fetch('/human', {
                     body: JSON.stringify({
-                        text: message,
+                        text: messageVal,
                         type: 'chat',
                         interrupt: true,
                         sessionid: String(document.getElementById('sessionid').value),
@@ -592,139 +803,28 @@
                         'Content-Type': 'application/json'
                     },
                     method: 'POST'
+                }).then(res => res.json())
+                .then(data => {
+                    if (data && data.data && data.data.response) {
+                        setTimeout(() => {
+                            addChatMessage(data.data.response, 'avatar');
+                        }, 200);
+                    }
+                }).catch(function(error) {
+                    console.error('Error posting chat message:', error);
                 });
-                
-                addChatMessage(message, 'user');
-                $('#chat-message').val('');
+
+                // Instantly append user message to feed
+                addChatMessage(messageVal, 'user');
+                textInput.val('');
             });
 
-            // Hold to talk voice recording
-            let mediaRecorder;
-            let audioChunks = [];
-            let isRecording = false;
-            let recognition;
-            
-            // Check speech recognition support
-            const isSpeechRecognitionSupported = 'webkitSpeechRecognition' in window || 'SpeechRecognition' in window;
-            
-            if (isSpeechRecognitionSupported) {
-                recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-                recognition.continuous = true;
-                recognition.interimResults = true;
-                recognition.lang = 'en-US';
-                
-                recognition.onresult = function(event) {
-                    let interimTranscript = '';
-                    let finalTranscript = '';
-                    
-                    for (let i = event.resultIndex; i < event.results.length; ++i) {
-                        if (event.results[i].isFinal) {
-                            finalTranscript += event.results[i][0].transcript;
-                        } else {
-                            interimTranscript += event.results[i][0].transcript;
-                            $('#chat-message').val(interimTranscript);
-                        }
-                    }
-                    
-                    if (finalTranscript) {
-                        $('#chat-message').val(finalTranscript);
-                    }
-                };
-                
-                recognition.onerror = function(event) {
-                    console.error('Speech recognition error:', event.error);
-                };
-            }
-            
-            // Hold to talk events
-            $('#voice-record-btn').on('mousedown touchstart', function(e) {
-                e.preventDefault();
-                startRecording();
-            }).on('mouseup mouseleave touchend', function() {
-                if (isRecording) {
-                    stopRecording();
-                }
-            });
-            
-            // Start recording
-            function startRecording() {
-                if (isRecording) return;
-                
-                navigator.mediaDevices.getUserMedia({ audio: true })
-                    .then(function(stream) {
-                        audioChunks = [];
-                        mediaRecorder = new MediaRecorder(stream);
-                        
-                        mediaRecorder.ondataavailable = function(e) {
-                            if (e.data.size > 0) {
-                                audioChunks.push(e.data);
-                            }
-                        };
-                        
-                        mediaRecorder.start();
-                        isRecording = true;
-                        
-                        $('#voice-record-btn').addClass('recording-pulse');
-                        $('#voice-record-btn').css('background-color', '#dc3545');
-                        
-                        if (recognition) {
-                            recognition.start();
-                        }
-                    })
-                    .catch(function(error) {
-                        console.error('Cannot access microphone:', error);
-                        alert('Cannot access microphone, please check browser permission settings.');
-                    });
-            }
-
-            // Stop recording
-            function stopRecording() {
-                if (!isRecording) return;
-                
-                mediaRecorder.stop();
-                isRecording = false;
-                
-                // Stop all tracks
-                mediaRecorder.stream.getTracks().forEach(track => track.stop());
-                
-                // Visual feedback reset
-                $('#voice-record-btn').removeClass('recording-pulse');
-                $('#voice-record-btn').css('background-color', '');
-                
-                // Stop recognition
-                if (recognition) {
-                    recognition.stop();
-                }
-                
-                // Get recognized text and send
-                setTimeout(function() {
-                    const recognizedText = $('#chat-message').val().trim();
-                    if (recognizedText) {
-                        fetch('/human', {
-                            body: JSON.stringify({
-                                text: recognizedText,
-                                type: 'chat',
-                                interrupt: true,
-                                sessionid: String(document.getElementById('sessionid').value),
-                            }),
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            method: 'POST'
-                        });
-                        
-                        addChatMessage(recognizedText, 'user');
-                        $('#chat-message').val('');
-                    }
-                }, 500); 
-            }
-
-            // WebRTC related functions
+            // Bind to global WebRTC state callbacks to trigger correct UI responses
             if (typeof window.onWebRTCConnected === 'function') {
-                const originalOnConnected = window.onWebRTCConnected;
+                const prevOnWebRTCConnected = window.onWebRTCConnected;
                 window.onWebRTCConnected = function() {
                     updateConnectionStatus('connected');
-                    if (originalOnConnected) originalOnConnected();
+                    if (prevOnWebRTCConnected) prevOnWebRTCConnected();
                 };
             } else {
                 window.onWebRTCConnected = function() {
@@ -732,39 +832,16 @@
                 };
             }
 
-            // Update status on disconnect
             if (typeof window.onWebRTCDisconnected === 'function') {
-                const originalOnDisconnected = window.onWebRTCDisconnected;
+                const prevOnWebRTCDisconnected = window.onWebRTCDisconnected;
                 window.onWebRTCDisconnected = function() {
                     updateConnectionStatus('disconnected');
-                    if (originalOnDisconnected) originalOnDisconnected();
+                    if (prevOnWebRTCDisconnected) prevOnWebRTCDisconnected();
                 };
             } else {
                 window.onWebRTCDisconnected = function() {
                     updateConnectionStatus('disconnected');
                 };
-            }
-
-            // SRS WebRTC playback
-            var sdk = null;
-
-            function startPlay() {
-                if (sdk) {
-                    sdk.close();
-                }
-                
-                sdk = new SrsRtcWhipWhepAsync();
-                $('#video').prop('srcObject', sdk.stream);
-                
-                var host = window.location.hostname;
-                var url = "http://" + host + ":1985/rtc/v1/whep/?app=live&stream=livestream";
-                
-                sdk.play(url).then(function(session) {
-                    console.log('WebRTC playback started, Session ID:', session.sessionid);
-                }).catch(function(reason) {
-                    sdk.close();
-                    console.error('WebRTC playback failed:', reason);
-                });
             }
         });
     </script>
