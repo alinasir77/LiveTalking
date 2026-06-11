@@ -50,3 +50,4 @@ dashscope
 
 #typeguard==2.13.3
 #onnxruntime-gpu
+boto3

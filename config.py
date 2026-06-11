@@ -43,12 +43,16 @@ def parse_args():
                         help="custom action json")
 
     # ─── TTS ───────────────────────────────────────────────────────────
-    parser.add_argument('--tts', type=str, default='edgetts',
-                        help="tts plugin: edgetts/gpt-sovits/cosyvoice/fishtts/tencent/doubao/indextts2/azuretts/qwentts")
-    parser.add_argument('--REF_FILE', type=str, default="zh-CN-YunxiaNeural",
-                        help="参考文件名或语音模型ID")
-    parser.add_argument('--REF_TEXT', type=str, default=None)
-    parser.add_argument('--TTS_SERVER', type=str, default='http://127.0.0.1:9880')
+    # parser.add_argument('--tts', type=str, default='edgetts',
+    #                     help="tts plugin: edgetts/gpt-sovits/cosyvoice/fishtts/tencent/doubao/indextts2/azuretts/qwentts")
+    # parser.add_argument('--REF_FILE', type=str, default="zh-CN-YunxiaNeural",
+    #                     help="参考文件名或语音模型ID")
+    # parser.add_argument('--REF_TEXT', type=str, default=None)
+    # parser.add_argument('--TTS_SERVER', type=str, default='http://127.0.0.1:9880')
+
+    # ─ making aws polly as default TTS option for easier testing, can be switched to other TTS by --tts parameter
+    parser.add_argument('--tts', type=str, default='awspolly')
+    parser.add_argument('--POLLY_VOICE_ID', type=str, default='Joanna')
 
     # ─── 传输 ─────────────────────────────────────────────────────────
     parser.add_argument('--transport', type=str, default='webrtc',

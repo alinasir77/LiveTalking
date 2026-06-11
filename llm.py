@@ -1,65 +1,95 @@
 import time
-import os
+import boto3
 from typing import TYPE_CHECKING
+
 if TYPE_CHECKING:
     from avatars.base_avatar import BaseAvatar
+
 from utils.logger import logger
 
-def llm_response(message,avatar_session:'BaseAvatar',datainfo:dict={}):
+
+MAX_MESSAGES = 20  # 10 user/assistant exchanges
+
+SYSTEM_PROMPT = (
+    "You are a knowledge assistant. "
+    "Respond briefly and conversationally."
+)
+
+
+def llm_response(message, avatar_session: "BaseAvatar", datainfo: dict = {}):
     try:
         opt = avatar_session.opt
-        # Static response to avoid using paid third-party services
-        static_response = f"收到，这是本地静态测试回复。你发送的消息是：{message}"
-        logger.info(f"Static LLM response: {static_response}")
-        avatar_session.put_msg_txt(static_response, datainfo)
-        return static_response
+        start = time.perf_counter()
 
-        # start = time.perf_counter()
-        # from openai import OpenAI
-        # client = OpenAI(
-        #     # 如果您没有配置环境变量，请在此处用您的API Key进行替换
-        #     api_key=os.getenv("DASHSCOPE_API_KEY"),
-        #     # 填写DashScope SDK的base_url
-        #     base_url="https://dashscope.aliyuncs.com/compatible-mode/v1",
-        # )
-        # end = time.perf_counter()
-        # logger.info(f"llm Time init: {end-start}s,{message}")
-        # completion = client.chat.completions.create(
-        #     model="qwen-plus",
-        #     messages=[{'role': 'system', 'content': '你是一个知识助手，尽量以简短、口语化的方式输出'},
-        #             {'role': 'user', 'content': message}],
-        #     stream=True,
-        #     # 通过以下设置，在流式输出的最后一行展示token使用信息
-        #     stream_options={"include_usage": True}
-        # )
-        # result=""
-        # first = True
-        # for chunk in completion:
-        #     if len(chunk.choices)>0:
-        #         #print(chunk.choices[0].delta.content)
-        #         if first:
-        #             end = time.perf_counter()
-        #             logger.info(f"llm Time to first chunk: {end-start}s")
-        #             first = False
-        #         msg = chunk.choices[0].delta.content
-        #         if msg is None:
-        #             continue
-        #         lastpos=0
-        #         #msglist = re.split('[,.!;:，。！?]',msg)
-        #         for i, char in enumerate(msg):
-        #             if char in ",.!;:，。！？：；" :
-        #                 result = result+msg[lastpos:i+1]
-        #                 lastpos = i+1
-        #                 if len(result)>10:
-        #                     logger.info(result)
-        #                     avatar_session.put_msg_txt(result,datainfo)
-        #                     result=""
-        #         result = result+msg[lastpos:]
-        # end = time.perf_counter()
-        # logger.info(f"llm Time to last chunk: {end-start}s")
-        # if result:
-        #     avatar_session.put_msg_txt(result,datainfo)
-        
-    except Exception as e:
-        logger.exception('llm exceptiopn:')
-        return   
+        # Initialize conversation history for this session
+        if not hasattr(avatar_session, "history"):
+            avatar_session.history = []
+
+        # Add the user's message to history
+        avatar_session.history.append(
+            {
+                "role": "user",
+                "content": [
+                    {
+                        "text": message
+                    }
+                ]
+            }
+        )
+
+        # Keep only the most recent messages
+        if len(avatar_session.history) > MAX_MESSAGES:
+            avatar_session.history = avatar_session.history[-MAX_MESSAGES:]
+
+        bedrock = boto3.client(
+            "bedrock-runtime",
+            region_name=getattr(opt, "region", "us-east-1")
+        )
+
+        end = time.perf_counter()
+        logger.info(f"llm Time init: {end - start}s, {message}")
+
+        response = bedrock.converse(
+            modelId=getattr(opt, "modelId", "amazon.nova-lite-v1:0"),
+            system=[
+                {
+                    "text": SYSTEM_PROMPT
+                }
+            ],
+            messages=avatar_session.history,
+            inferenceConfig={
+                "maxTokens": 200,
+                "temperature": 0.5
+            }
+        )
+
+        assistant_text = response["output"]["message"]["content"][0]["text"]
+
+        # Save assistant response to history
+        avatar_session.history.append(
+            {
+                "role": "assistant",
+                "content": [
+                    {
+                        "text": assistant_text
+                    }
+                ]
+            }
+        )
+
+        # Trim again after adding assistant response
+        if len(avatar_session.history) > MAX_MESSAGES:
+            avatar_session.history = avatar_session.history[-MAX_MESSAGES:]
+
+        logger.info(assistant_text)
+
+        # Send response to avatar
+        avatar_session.put_msg_txt(assistant_text, datainfo)
+
+        end = time.perf_counter()
+        logger.info(f"llm Total Time: {end - start}s")
+        return assistant_text
+
+    except Exception:
+        logger.exception("llm exception:")
+        return
