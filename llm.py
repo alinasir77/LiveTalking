@@ -13,6 +13,7 @@ MAX_MESSAGES = 20  # 10 user/assistant exchanges
 SYSTEM_PROMPT = (
     "You are a knowledge assistant. "
     "Respond briefly and conversationally."
+    "do not include any emojis in your response. "
 )
 
 
