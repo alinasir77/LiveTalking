@@ -721,6 +721,9 @@
                         statusText.text('Disconnected');
                         placeholder.fadeIn(300);
                         video.fadeOut(300);
+                        if (video.length && video[0].srcObject) {
+                            video[0].srcObject = null;
+                        }
                         setChatActiveState(false);
                         hasSentGreeting = false;
                         break;
